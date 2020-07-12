@@ -3,8 +3,9 @@ import {
   getRGBString,
   getHex,
   getLinearGradient,
-  getLinearDataGradient,
+  getDataGradient,
   getMultiColorDataGradient,
+  getColorFromDataGradient,
 } from './utilities';
 
-export { getRGBArray, getRGBString, getHex, getLinearGradient, getLinearDataGradient, getMultiColorDataGradient };
+export { getRGBArray, getRGBString, getHex, getLinearGradient, getMultiColorDataGradient };

@@ -70,7 +70,7 @@ function getLinearGradient(
 }
 
 // Array of objects representing steps in a data gradient
-function getLinearDataGradient(
+function getDataGradient(
   minColor: string | number[],
   minVal: number,
   maxColor: string | number[],
@@ -135,7 +135,7 @@ function getMultiColorDataGradient(gradientDefinition: GradientDefinition[], ste
   for (const gr of gradientDefinition) {
     const diff = gr.maxVal - gr.minVal;
     const numSteps = Math.round((steps * diff) / overallDiff);
-    const grad = getLinearDataGradient(gr.minColor, gr.minVal, gr.maxColor, gr.maxVal, numSteps, false, returnType);
+    const grad = getDataGradient(gr.minColor, gr.minVal, gr.maxColor, gr.maxVal, numSteps, false, returnType);
     if (grad) gradient = gradient.concat(grad);
   }
   return gradient;
@@ -158,7 +158,7 @@ function changeSaturation(color: string | number[], percent: number, returnType:
   return formatFunc([R, G, B]);
 }
 
-function getColorFromLinearDataGradient(
+function getColorFromDataGradient(
   minColor: string | number[],
   minVal: number,
   maxColor: string | number[],
@@ -201,22 +201,40 @@ function getColorFromLinearDataGradient(
   }
 }
 
-function getColorFromMultiColorLinearGradient(gradientDefinition: GradientDefinition[], steps: number, value: number, returnType?: string, byStep: boolean = true) {
-    if (gradientDefinition.length === 0) throw new Error('getColorFromMultiColorLinearGradient: gradient has no values')
-    if (value < gradientDefinition[0].minVal) throw new Error('getColorFromMultiColorLinearGradient: value is below the gradient')
-    if (value > gradientDefinition[gradientDefinition.length-1].maxVal) throw new Error('getColorFromMultiColorLinearGradient: value is above the gradient')
+function getColorFromMultiColorDataGradient(
+  gradientDefinition: GradientDefinition[],
+  steps: number,
+  value: number,
+  returnType?: string,
+  byStep: boolean = true,
+) {
+  if (gradientDefinition.length === 0) throw new Error('getColorFromMultiColorLinearGradient: gradient has no values');
+  if (value < gradientDefinition[0].minVal)
+    throw new Error('getColorFromMultiColorLinearGradient: value is below the gradient');
+  if (value > gradientDefinition[gradientDefinition.length - 1].maxVal)
+    throw new Error('getColorFromMultiColorLinearGradient: value is above the gradient');
 
-    const minVal = gradientDefinition[0].minVal;
-    const maxVal = gradientDefinition[gradientDefinition.length - 1].maxVal;
-    const overallDiff = maxVal - minVal;
+  const minVal = gradientDefinition[0].minVal;
+  const maxVal = gradientDefinition[gradientDefinition.length - 1].maxVal;
+  const overallDiff = maxVal - minVal;
 
-    for (let step of gradientDefinition) {
-        if (value > step.minVal && value <= step.maxVal) {
-            const diff = step.maxVal - step.minVal;
-            const numSteps = Math.round((steps * diff) / overallDiff);
-            return getColorFromLinearDataGradient(step.minColor, step.minVal, step.maxColor, step.maxVal, numSteps, value, false, returnType, byStep)
-        }
+  for (let step of gradientDefinition) {
+    if (value > step.minVal && value <= step.maxVal) {
+      const diff = step.maxVal - step.minVal;
+      const numSteps = Math.round((steps * diff) / overallDiff);
+      return getColorFromDataGradient(
+        step.minColor,
+        step.minVal,
+        step.maxColor,
+        step.maxVal,
+        numSteps,
+        value,
+        false,
+        returnType,
+        byStep,
+      );
     }
+  }
 }
 
 export {
@@ -224,9 +242,9 @@ export {
   getRGBString,
   getHex,
   getLinearGradient,
-  getLinearDataGradient,
+  getDataGradient,
   getMultiColorDataGradient,
   changeSaturation,
-  getColorFromLinearDataGradient,
-  getColorFromMultiColorLinearGradient,
+  getColorFromDataGradient,
+  getColorFromMultiColorDataGradient,
 };

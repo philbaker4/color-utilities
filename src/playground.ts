@@ -1,4 +1,9 @@
-import { getMultiColorDataGradient, changeSaturation, getColorFromMultiColorLinearGradient } from './utilities';
+import {
+  getMultiColorDataGradient,
+  changeSaturation,
+  getColorFromMultiColorDataGradient,
+  getColorFromDataGradient,
+} from './utilities';
 
 const multiColorGradientDefinition = [
   {
@@ -17,6 +22,10 @@ const multiColorGradientDefinition = [
 
 console.log(getMultiColorDataGradient(multiColorGradientDefinition, 12, 'HEX'));
 
-console.log(getColorFromMultiColorLinearGradient(multiColorGradientDefinition, 12, .5, 'RGB_ARRAY', false))
+console.log(getColorFromMultiColorDataGradient(multiColorGradientDefinition, 12, 0.5, 'RGB_ARRAY', true));
+console.log(getColorFromMultiColorDataGradient(multiColorGradientDefinition, 12, 0.5, 'HEX', true));
 
-
+console.log(getColorFromDataGradient('red', 0, 'blue', 1, 4, 0.1, false, 'RGB_ARRAY', true));
+console.log(getColorFromDataGradient('red', 0, 'blue', 1, 4, 0.1, false, 'RGB_ARRAY', false));
+console.log(getColorFromDataGradient('red', 0, 'blue', 1, 4, 0.1, true, 'RGB_ARRAY', true));
+console.log(getColorFromDataGradient('red', 0, 'blue', 1, 4, 0.1, true, 'RGB_ARRAY', false));

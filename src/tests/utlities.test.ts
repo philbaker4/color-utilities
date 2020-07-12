@@ -3,9 +3,11 @@ import {
   getRGBArray,
   getHex,
   getLinearGradient,
-  getLinearDataGradient,
+  getDataGradient,
   getMultiColorDataGradient,
   changeSaturation,
+  getColorFromMultiColorDataGradient,
+  getColorFromDataGradient,
 } from '../utilities';
 test('getRGBString', () => {
   expect(getRGBString([123, 123, 123])).toBe('rgb(123, 123, 123)');
@@ -61,8 +63,8 @@ test('getLinearGradient - exclusive - RGB_STRING', () => {
   ]);
 });
 
-test('getLinearDataGradient - exclusive - RGB_HEX', () => {
-  expect(getLinearDataGradient('red', 0, 'blue', 1, 4, false, 'HEX')).toStrictEqual([
+test('getDataGradient - exclusive - RGB_HEX', () => {
+  expect(getDataGradient('red', 0, 'blue', 1, 4, false, 'HEX')).toStrictEqual([
     {
       minVal: 0,
       maxVal: 0.25,
@@ -86,8 +88,8 @@ test('getLinearDataGradient - exclusive - RGB_HEX', () => {
   ]);
 });
 
-test('getLinearDataGradient - exclusive - RGB_STRING', () => {
-  expect(getLinearDataGradient('red', 0, 'blue', 1, 4, false, 'RGB_STRING')).toStrictEqual([
+test('getDataGradient - exclusive - RGB_STRING', () => {
+  expect(getDataGradient('red', 0, 'blue', 1, 4, false, 'RGB_STRING')).toStrictEqual([
     {
       minVal: 0,
       maxVal: 0.25,
@@ -111,8 +113,8 @@ test('getLinearDataGradient - exclusive - RGB_STRING', () => {
   ]);
 });
 
-test('getLinearDataGradient - exclusive - RGB_ARRAY', () => {
-  expect(getLinearDataGradient('red', 0, 'blue', 1, 4, false, 'RGB_ARRAY')).toStrictEqual([
+test('getDataGradient - exclusive - RGB_ARRAY', () => {
+  expect(getDataGradient('red', 0, 'blue', 1, 4, false, 'RGB_ARRAY')).toStrictEqual([
     {
       minVal: 0,
       maxVal: 0.25,
@@ -199,6 +201,34 @@ test('getMultiColorDataGradient - HEX', () => {
     { color: '#aaaa55', minVal: 2.25, maxVal: 2.5 },
     { color: '#c6c639', minVal: 2.5, maxVal: 2.75 },
     { color: '#e3e31c', minVal: 2.75, maxVal: 3 },
+  ]);
+});
+
+test('getColorFromDataGradient: exclusive - by step', () => {
+  expect(getColorFromDataGradient('red', 0, 'blue', 1, 4, 0.1, false, 'RGB_ARRAY', true)).toStrictEqual([204, 0, 51]);
+});
+test('getColorFromDataGradient: exclusive - not by step', () => {
+  expect(getColorFromDataGradient('red', 0, 'blue', 1, 4, 0.1, false, 'RGB_ARRAY', false)).toStrictEqual([230, 0, 26]);
+});
+test('getColorFromDataGradient: inclusive - by step', () => {
+  expect(getColorFromDataGradient('red', 0, 'blue', 1, 4, 0.1, true, 'RGB_ARRAY', true)).toStrictEqual([255, 0, 0]);
+});
+test('getColorFromDataGradient: inclusive - not by step', () => {
+  expect(getColorFromDataGradient('red', 0, 'blue', 1, 4, 0.1, true, 'RGB_ARRAY', false)).toStrictEqual([230, 0, 26]);
+});
+
+test('getColorFromMultiColorDataGradient - RGB_ARRAY - not byStep', () => {
+  expect(getColorFromMultiColorDataGradient(multiColorGradientDefinition, 12, 0.5, 'RGB_ARRAY', false)).toStrictEqual([
+    128,
+    0,
+    128,
+  ]);
+});
+test('getColorFromMultiColorDataGradient - RGB_ARRAY - byStep', () => {
+  expect(getColorFromMultiColorDataGradient(multiColorGradientDefinition, 12, 0.5, 'RGB_ARRAY', true)).toStrictEqual([
+    102,
+    0,
+    153,
   ]);
 });
 
