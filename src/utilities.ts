@@ -94,4 +94,88 @@ function getLinearGradient(minColor: string, maxColor: string, steps: number, in
     return colors
 }
 
-export { getRGBArray, getRGBString, getHex, getLinearGradient}
+
+// Array of objects representing steps in a data gradient 
+function getLinearDataGradient(minColor: string, minVal: number, maxColor: string, maxVal: number, steps: number, inclusiveEnds: boolean=true, returnType: string='HEX') {
+    let formatFunc;
+    switch(returnType) {
+        case 'HEX':
+            formatFunc = getHex
+            break
+        case 'RBG_STRING':
+            formatFunc = getRGBString
+            break
+        case 'RBG_ARRAY':
+            formatFunc = getRGBArray
+            break
+        default:
+            console.error('getColorSteps: returnType must be one of HEX, RGB_STRING, RGB_ARRAY')
+            return;
+    }
+
+    var minColorRGB = processValue(minColor);
+    var maxColorRGB = processValue(maxColor);
+    if (!minColorRGB) {
+        console.error('getColorSteps: minColor not formatted correctly or not a valid css color name.')
+        return;
+    }
+    if (!maxColorRGB) {
+        console.error('getColorSteps: maxColor not formatted correctly or not a valid css color name.')
+        return;
+    }
+    const stepsPerc = 100 / (steps);
+    const diff = maxVal - minVal
+    const colors: Array<any> = []
+
+    if (inclusiveEnds) colors.push({
+        color: formatFunc(minColorRGB),
+        minVal,
+        maxVal: minVal + diff * stepsPerc/100 
+    })
+    // const colors = []
+    let minI: number, maxI: number;
+    if (inclusiveEnds) { 
+        minI = 1;
+        maxI = steps - 1;
+    }
+    else {
+        minI = 0;
+        maxI = steps;
+    }
+    for (let i = minI; i < maxI; i++) {
+        var valClampRGB = [maxColorRGB[0] - minColorRGB[0], maxColorRGB[1] - minColorRGB[1], maxColorRGB[2] - minColorRGB[2]];
+        var clampedR = 
+        valClampRGB[0] > 0
+            ? Math.round((valClampRGB[0] / 100) * (stepsPerc * (i + 1)))
+            : Math.round(minColorRGB[0] + (valClampRGB[0] / 100) * (stepsPerc * (i + 1)))
+
+        var clampedG =
+            valClampRGB[1] > 0
+                ? Math.round((valClampRGB[1] / 100) * (stepsPerc * (i + 1)))
+                : Math.round(minColorRGB[1] + (valClampRGB[1] / 100) * (stepsPerc * (i + 1)))
+
+        var clampedB =
+            valClampRGB[2] > 0
+                ? Math.round((valClampRGB[2] / 100) * (stepsPerc * (i + 1)))
+                : Math.round(minColorRGB[2] + (valClampRGB[2] / 100) * (stepsPerc * (i + 1)))
+            
+        
+        colors.push({
+                color: formatFunc([clampedR, clampedG, clampedB]),
+                minVal: minVal + (i) * stepsPerc/100 * diff,
+                maxVal: minVal + (i+1) * stepsPerc/100 * diff
+            })
+    }
+    // last color is max color
+    if (inclusiveEnds) colors.push(
+        {
+            color: formatFunc(maxColorRGB),
+            minVal: maxVal - diff * stepsPerc/100,
+            maxVal,
+        }
+    ) 
+    return colors
+}
+
+
+export { getRGBArray, getRGBString, getHex, getLinearGradient, getLinearDataGradient}
