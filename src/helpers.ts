@@ -15,7 +15,7 @@ function getType(val: string): number {
 }
 
 // process the value irrespective of representation type
-export function processValue(val: string | number[]): Array<number> | undefined {
+export function processValue(val: string | number[]): number[] | undefined {
 	if (typeof val === 'string') {
 		const type = getType(val)
 		switch (type) {
@@ -40,23 +40,25 @@ export function processValue(val: string | number[]): Array<number> | undefined 
    
 }
 
-//return a workable RGB int array [r,g,b] from rgb/rgba representation
+// return a workable RGB int array [r,g,b] from rgb/rgba representation
 function processRGB(val: string) {
-	var rgb = val
+	const rgb = val
 		.split('(')[1]
 		.split(')')[0]
 		.split(',');
 	return [parseInt(rgb[0], 10), parseInt(rgb[1], 10), parseInt(rgb[2], 10)];
 }
 
-//return a workable RGB int array [r,g,b] from hex representation
+// return a workable RGB int array [r,g,b] from hex representation
 function processHEX(val: string) {
-	//does the hex contain extra char?
-	var hex = val.length > 6 ? val.substr(1, val.length - 1) : val;
+	// does the hex contain extra char?
+	const hex = val.length > 6 ? val.substr(1, val.length - 1) : val;
 	// is it a six character hex?
-	var r, g, b;
+	let r;
+	let g;
+	let b;
 	if (hex.length > 3) {
-		//scrape out the numerics
+		// scrape out the numerics
 		r = hex.substr(0, 2);
 		g = hex.substr(2, 2);
 		b = hex.substr(4, 2);
@@ -72,14 +74,14 @@ function processHEX(val: string) {
 	// return our clean values
 	return [parseInt(r, 16), parseInt(g, 16), parseInt(b, 16)];
 }
-//return a workable RGB int array [r,g,b] from rgb array representation
+// return a workable RGB int array [r,g,b] from rgb array representation
 function processArray(val: number[]) {
 	return [val[0], val[1], val[2]];
 }
-//return a workable RGB int array [r,g,b] from css color name representation
+// return a workable RGB int array [r,g,b] from css color name representation
 function processCSSColorName(val: string)
 {
-    var colors: { [key: string]: string; }= {
+    const colors: { [key: string]: string; }= {
         "aliceblue":"#f0f8ff","antiquewhite":"#faebd7","aqua":"#00ffff","aquamarine":"#7fffd4","azure":"#f0ffff",
         "beige":"#f5f5dc","bisque":"#ffe4c4","black":"#000000","blanchedalmond":"#ffebcd","blue":"#0000ff","blueviolet":"#8a2be2","brown":"#a52a2a","burlywood":"#deb887",
         "cadetblue":"#5f9ea0","chartreuse":"#7fff00","chocolate":"#d2691e","coral":"#ff7f50","cornflowerblue":"#6495ed","cornsilk":"#fff8dc","crimson":"#dc143c","cyan":"#00ffff",

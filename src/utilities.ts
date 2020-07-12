@@ -3,16 +3,14 @@ import { processValue, pad} from './helpers'
 function getRGBString(color: any) {
     const rgbArray = processValue(color)
     if (!rgbArray) {
-        console.error('getRGBString: Color string not formatted correctly or not a valid css color name.')
-        return;
+        throw new Error('getRGBString: Color string not formatted correctly or not a valid css color name.')
     }
     return `rgb(${rgbArray.join(', ')})`
 }
 function getRGBArray(color: any) {
     const rgbArray = processValue(color);
     if (!rgbArray) {
-        console.error('getRGBArray: Color string not formatted correctly or not a valid css color name.')
-        return;
+        throw new Error('getRGBArray: Color string not formatted correctly or not a valid css color name.')
     }
     return rgbArray;
 }
@@ -20,8 +18,7 @@ function getRGBArray(color: any) {
 function getHex(color: any) {
     const rgbArray = processValue(color)
     if (!rgbArray) {
-        console.error('getHex: Color string not formatted correctly or not a valid css color name.')
-        return;
+        throw new Error('getHex: Color string not formatted correctly or not a valid css color name.')
     }
     const R = pad(rgbArray[0].toString(16), 2);
     const G = pad(rgbArray[1].toString(16), 2);
@@ -29,13 +26,13 @@ function getHex(color: any) {
     return ['#', R, G, B].join('');
 }
 
-function _getRGBString(color: Array<number>) {
+function _getRGBString(color: number[]): string {
     return `rgb(${color.join(', ')})`
 }
-function _getRGBArray(color: Array<number>) {
+function _getRGBArray(color: number[]): number[] {
     return color;
 }
-function _getHex(color: Array<number>) {
+function _getHex(color: number[]): string {
     const R = pad(color[0].toString(16), 2);
     const G = pad(color[1].toString(16), 2);
     const B = pad(color[2].toString(16), 2);
@@ -47,34 +44,34 @@ function getLinearGradient(minColor: string | number[], maxColor: string | numbe
     let formatFunc;
     switch(returnType) {
         case 'HEX':
-            formatFunc = getHex
+            formatFunc = _getHex
             break
         case 'RGB_STRING':
-            formatFunc = getRGBString
+            formatFunc = _getRGBString
             break
         case 'RGB_ARRAY':
-            formatFunc = getRGBArray
+            formatFunc = _getRGBArray
             break
         default:
-            console.error('getColorSteps: returnType must be one of HEX, RGB_STRING, RGB_ARRAY')
-            return;
+            throw new Error('getColorSteps: returnType must be one of HEX, RGB_STRING, RGB_ARRAY')
     }
 
-    var minColorRGB: any = processValue(minColor);
-    var maxColorRGB: any = processValue(maxColor);
+    const minColorRGB: number[] | undefined = processValue(minColor);
+    const maxColorRGB: number[] | undefined = processValue(maxColor);
 
     if (!minColorRGB) {
-        console.error('getColorSteps: minColor not formatted correctly or not a valid css color name.')
-        return;
+        throw new Error('getColorSteps: minColor not formatted correctly or not a valid css color name.')
     }
     if (!maxColorRGB) {
-        console.error('getColorSteps: maxColor not formatted correctly or not a valid css color name.')
-        return;
+        throw new Error('getColorSteps: maxColor not formatted correctly or not a valid css color name.')
     }
-    const colors: Array<any> = []
-    if (inclusiveEnds) colors.push(formatFunc(minColorRGB))
+    const colors: any[]  = []
+    if (inclusiveEnds) {
+        colors.push(formatFunc(minColorRGB))
+    }
     const stepsPerc = 100 / (steps)
-    let minI: number, maxI: number;
+    let minI: number;
+    let maxI: number;
     if (inclusiveEnds) { 
         minI = 1;
         maxI = steps - 1;
@@ -84,18 +81,18 @@ function getLinearGradient(minColor: string | number[], maxColor: string | numbe
         maxI = steps;
     }
     for (let i = minI; i < maxI; i++) {
-        var valClampRGB = [maxColorRGB[0] - minColorRGB[0], maxColorRGB[1] - minColorRGB[1], maxColorRGB[2] - minColorRGB[2]];
-        var clampedR = 
+        const valClampRGB = [maxColorRGB[0] - minColorRGB[0], maxColorRGB[1] - minColorRGB[1], maxColorRGB[2] - minColorRGB[2]];
+        const clampedR = 
             valClampRGB[0] > 0
                 ? Math.round((valClampRGB[0] / 100) * (stepsPerc * (i + 1)))
                 : Math.round(minColorRGB[0] + (valClampRGB[0] / 100) * (stepsPerc * (i + 1)))
 
-        var clampedG =
+        const clampedG =
             valClampRGB[1] > 0
                 ? Math.round((valClampRGB[1] / 100) * (stepsPerc * (i + 1)))
                 : Math.round(minColorRGB[1] + (valClampRGB[1] / 100) * (stepsPerc * (i + 1)))
 
-        var clampedB =
+        const clampedB =
             valClampRGB[2] > 0
                 ? Math.round((valClampRGB[2] / 100) * (stepsPerc * (i + 1)))
                 : Math.round(minColorRGB[2] + (valClampRGB[2] / 100) * (stepsPerc * (i + 1)))
@@ -122,19 +119,16 @@ function getLinearDataGradient(minColor: string | number[], minVal: number, maxC
             formatFunc = _getRGBArray
             break
         default:
-            console.error('getColorSteps: returnType must be one of HEX, RGB_STRING, RGB_ARRAY')
-            return;
+            throw new Error('getColorSteps: returnType must be one of HEX, RGB_STRING, RGB_ARRAY')
     }
 
-    var minColorRGB = processValue(minColor);
-    var maxColorRGB = processValue(maxColor);
+    const minColorRGB = processValue(minColor);
+    const maxColorRGB = processValue(maxColor);
     if (!minColorRGB) {
-        console.error('getColorSteps: minColor not formatted correctly or not a valid css color name.')
-        return;
+        throw new Error('getColorSteps: minColor not formatted correctly or not a valid css color name.')
     }
     if (!maxColorRGB) {
-        console.error('getColorSteps: maxColor not formatted correctly or not a valid css color name.')
-        return;
+        throw new Error('getColorSteps: maxColor not formatted correctly or not a valid css color name.')
     }
     const stepsPerc = 100 / (steps);
     const diff = maxVal - minVal
@@ -148,7 +142,8 @@ function getLinearDataGradient(minColor: string | number[], minVal: number, maxC
         })
     }
     // const colors = []
-    let minI: number, maxI: number;
+    let minI: number;
+    let maxI: number;
     if (inclusiveEnds) { 
         minI = 1;
         maxI = steps - 1;
@@ -158,18 +153,18 @@ function getLinearDataGradient(minColor: string | number[], minVal: number, maxC
         maxI = steps;
     }
     for (let i = minI; i < maxI; i++) {
-        var valClampRGB = [maxColorRGB[0] - minColorRGB[0], maxColorRGB[1] - minColorRGB[1], maxColorRGB[2] - minColorRGB[2]];
-        var clampedR = 
+        const valClampRGB = [maxColorRGB[0] - minColorRGB[0], maxColorRGB[1] - minColorRGB[1], maxColorRGB[2] - minColorRGB[2]];
+        const clampedR = 
         valClampRGB[0] > 0
             ? Math.round((valClampRGB[0] / 100) * (stepsPerc * (i + 1)))
             : Math.round(minColorRGB[0] + (valClampRGB[0] / 100) * (stepsPerc * (i + 1)))
 
-        var clampedG =
+        const clampedG =
             valClampRGB[1] > 0
                 ? Math.round((valClampRGB[1] / 100) * (stepsPerc * (i + 1)))
                 : Math.round(minColorRGB[1] + (valClampRGB[1] / 100) * (stepsPerc * (i + 1)))
 
-        var clampedB =
+        const clampedB =
             valClampRGB[2] > 0
                 ? Math.round((valClampRGB[2] / 100) * (stepsPerc * (i + 1)))
                 : Math.round(minColorRGB[2] + (valClampRGB[2] / 100) * (stepsPerc * (i + 1)))
@@ -196,11 +191,11 @@ function getLinearDataGradient(minColor: string | number[], minVal: number, maxC
 
 // Array of objects representing steps in a multicolor data gradient
 function getMultiColorDataGradient(gradientDefinition: GradientDefinition[], steps:number = 100) {
-    let minVal = gradientDefinition[0].minVal
-    let maxVal = gradientDefinition[gradientDefinition.length-1].maxVal
-    let overallDiff = maxVal - minVal
+    const minVal = gradientDefinition[0].minVal
+    const maxVal = gradientDefinition[gradientDefinition.length-1].maxVal
+    const overallDiff = maxVal - minVal
     let gradient: DataGradientStep[] = []
-    for (let gr of gradientDefinition) {
+    for (const gr of gradientDefinition) {
         const diff = gr.maxVal - gr.minVal
         const numSteps = Math.round(steps * diff / overallDiff)
         const grad = getLinearDataGradient(gr.minColor, gr.minVal, gr.maxColor, gr.maxVal, numSteps, false)
