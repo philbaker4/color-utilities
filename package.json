@@ -9,15 +9,20 @@
     "format": "prettier --write \"src/**/*.ts\"",
     "lint": "tslint -p tsconfig.json",
     "test": "jest --config jestconfig.json",
-    "prepare" : "npm run build",
-    "prepublishOnly" : "npm test && npm run lint",
-    "preversion" : "npm run lint",
-    "version" : "npm run format && git add -A src",
-    "postversion" : "git push && git push --tags",
-
+    "prepare": "npm run build",
+    "prepublishOnly": "npm test && npm run lint",
+    "preversion": "npm run lint",
+    "version": "npm run format && git add -A src",
+    "postversion": "git push && git push --tags",
     "playground": "ts-node src/playground.ts"
   },
-  "keywords": ["color", "gradient", "gradient generator", "color gradient", "linear gradient"],
+  "keywords": [
+    "color",
+    "gradient",
+    "gradient generator",
+    "color gradient",
+    "linear gradient"
+  ],
   "author": "philbaker4",
   "license": "ISC",
   "devDependencies": {
@@ -25,6 +30,7 @@
     "jest": "^26.1.0",
     "prettier": "^2.0.5",
     "ts-jest": "^26.1.1",
+    "ts-node": "^8.10.2",
     "tslint": "^6.1.2",
     "tslint-config-prettier": "^1.18.0",
     "typescript": "^3.9.6"
