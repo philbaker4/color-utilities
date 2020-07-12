@@ -1,4 +1,10 @@
+import {
+  getRGBArray,
+  getRGBString,
+  getHex,
+  getLinearGradient,
+  getLinearDataGradient,
+  getMultiColorDataGradient,
+} from './utilities';
 
-import { getRGBArray, getRGBString, getHex, getLinearGradient, getLinearDataGradient, getMultiColorDataGradient } from './utilities'
-
-export { getRGBArray, getRGBString, getHex, getLinearGradient, getLinearDataGradient, getMultiColorDataGradient }
+export { getRGBArray, getRGBString, getHex, getLinearGradient, getLinearDataGradient, getMultiColorDataGradient };
