@@ -5,6 +5,7 @@ import {
   getLinearGradient,
   getLinearDataGradient,
   getMultiColorDataGradient,
+  changeSaturation,
 } from '../utilities';
 test('getRGBString', () => {
   expect(getRGBString([123, 123, 123])).toBe('rgb(123, 123, 123)');
@@ -199,4 +200,28 @@ test('getMultiColorDataGradient - HEX', () => {
     { color: '#c6c639', minVal: 2.5, maxVal: 2.75 },
     { color: '#e3e31c', minVal: 2.75, maxVal: 3 },
   ]);
+});
+
+test('changeSaturation - lighten - RGB_ARRAY', () => {
+  expect(changeSaturation('red', 0.25, 'RGB_ARRAY')).toStrictEqual([255, 64, 64]);
+});
+
+test('changeSaturation - lighten - RGB_STRING', () => {
+  expect(changeSaturation('red', 0.25, 'RGB_STRING')).toStrictEqual('rgb(255, 64, 64)');
+});
+
+test('changeSaturation - lighten - HEX', () => {
+  expect(changeSaturation('red', 0.25, 'HEX')).toStrictEqual('#ff4040');
+});
+
+test('changeSaturation - darken', () => {
+  expect(changeSaturation('red', -0.25, 'RGB_ARRAY')).toStrictEqual([191, 0, 0]);
+});
+
+test('changeSaturation - lighten - RGB_STRING', () => {
+  expect(changeSaturation('red', -0.25, 'RGB_STRING')).toStrictEqual('rgb(191, 0, 0)');
+});
+
+test('changeSaturation - lighten - HEX', () => {
+  expect(changeSaturation('red', -0.25, 'HEX')).toStrictEqual('#bf0000');
 });

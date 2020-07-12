@@ -1,5 +1,6 @@
 import { processValue, pad } from './helpers';
 import { DataGradientStep, GradientDefinition } from './types';
+import { format } from 'prettier';
 function getRGBString(color: any) {
   const rgbArray = processValue(color);
   if (!rgbArray) {
@@ -221,4 +222,42 @@ function getMultiColorDataGradient(gradientDefinition: GradientDefinition[], ste
   return gradient;
 }
 
-export { getRGBArray, getRGBString, getHex, getLinearGradient, getLinearDataGradient, getMultiColorDataGradient };
+// adjust saturation of a color
+function changeSaturation(color: string | number[], percent: number, returnType: string = 'HEX') {
+  if (percent < -1 || percent > 1)
+    console.warn('changeSaturation: percent should be a decimal representation in [-1,1]');
+  let formatFunc;
+  switch (returnType) {
+    case 'HEX':
+      formatFunc = _getHex;
+      break;
+    case 'RGB_STRING':
+      formatFunc = _getRGBString;
+      break;
+    case 'RGB_ARRAY':
+      formatFunc = _getRGBArray;
+      break;
+    default:
+      throw new Error('changeSaturdation: returnType must be one of HEX, RGB_STRING, RGB_ARRAY');
+  }
+  const processedColor = processValue(color);
+  if (!processedColor)
+    throw new Error('changeSaturation: Color string not formatted correctly or not a valid css color name.');
+  const oldR = processedColor[0];
+  const oldG = processedColor[1];
+  const oldB = processedColor[2];
+  const R = Math.round(Math.min(Math.max(0, oldR + 255 * percent), 255));
+  const G = Math.round(Math.min(Math.max(0, oldG + 255 * percent), 255));
+  const B = Math.round(Math.min(Math.max(0, oldB + 255 * percent), 255));
+  return formatFunc([R, G, B]);
+}
+
+export {
+  getRGBArray,
+  getRGBString,
+  getHex,
+  getLinearGradient,
+  getLinearDataGradient,
+  getMultiColorDataGradient,
+  changeSaturation,
+};
