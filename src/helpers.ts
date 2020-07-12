@@ -15,25 +15,29 @@ function getType(val: string): number {
 }
 
 // process the value irrespective of representation type
-export function processValue(val: string): Array<number> | undefined {
-    const type = getType(val)
-	switch (type) {
-		case HEX: {
-			return processHEX(val);
+export function processValue(val: string | number[]): Array<number> | undefined {
+	if (typeof val === 'string') {
+		const type = getType(val)
+		switch (type) {
+			case HEX: {
+				return processHEX(val);
+			}
+			case RGB: {
+				return processRGB(val);
+			}
+			case RGBA: {
+				return processRGB(val);
+			}
+			
+			case COLORNAME: {
+				return processCSSColorName(val)
+			}
 		}
-		case RGB: {
-			return processRGB(val);
-		}
-		case RGBA: {
-			return processRGB(val);
-		}
-		case ARRAY: {
-			return processArray(val);
-        }
-        case COLORNAME: {
-            return processCSSColorName(val)
-        }
 	}
+	else {
+		return processArray(val);
+	}
+   
 }
 
 //return a workable RGB int array [r,g,b] from rgb/rgba representation
@@ -69,8 +73,8 @@ function processHEX(val: string) {
 	return [parseInt(r, 16), parseInt(g, 16), parseInt(b, 16)];
 }
 //return a workable RGB int array [r,g,b] from rgb array representation
-function processArray(val: string) {
-	return [parseInt(val[0], 10), parseInt(val[1], 10), parseInt(val[2], 10)];
+function processArray(val: number[]) {
+	return [val[0], val[1], val[2]];
 }
 //return a workable RGB int array [r,g,b] from css color name representation
 function processCSSColorName(val: string)

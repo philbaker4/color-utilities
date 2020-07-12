@@ -43,7 +43,7 @@ function _getHex(color: Array<number>) {
 }
 
 // Array of colors representing gradient
-function getLinearGradient(minColor: string, maxColor: string, steps: number, inclusiveEnds: boolean=true, returnType: string='HEX') {
+function getLinearGradient(minColor: string | number[], maxColor: string | number[], steps: number, inclusiveEnds: boolean=true, returnType: string='HEX') {
     let formatFunc;
     switch(returnType) {
         case 'HEX':
@@ -109,7 +109,7 @@ function getLinearGradient(minColor: string, maxColor: string, steps: number, in
 
 
 // Array of objects representing steps in a data gradient 
-function getLinearDataGradient(minColor: string, minVal: number, maxColor: string, maxVal: number, steps: number, inclusiveEnds: boolean=true, returnType: string='HEX'): DataGradientStep[] | undefined {
+function getLinearDataGradient(minColor: string | number[], minVal: number, maxColor: string | number[], maxVal: number, steps: number, inclusiveEnds: boolean=true, returnType: string='HEX'): DataGradientStep[] | undefined {
     let formatFunc;
     switch(returnType) {
         case 'HEX':
