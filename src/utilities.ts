@@ -75,15 +75,15 @@ function getLinearGradient(
   }
   let minI: number;
   let maxI: number;
-  let stepsPerc: number;
+  let colorStepPercent: number;
   if (inclusiveEnds) {
     minI = 0;
     maxI = steps - 2;
-    stepsPerc = 100 / (steps - 1);
+    colorStepPercent = 100 / (steps - 1);
   } else {
     minI = 0;
     maxI = steps;
-    stepsPerc = 100 / (steps + 1);
+    colorStepPercent = 100 / (steps + 1);
   }
   for (let i = minI; i < maxI; i++) {
     const valClampRGB = [
@@ -93,18 +93,18 @@ function getLinearGradient(
     ];
     const clampedR =
       valClampRGB[0] > 0
-        ? Math.round((valClampRGB[0] / 100) * (stepsPerc * (i + 1)))
-        : Math.round(minColorRGB[0] + (valClampRGB[0] / 100) * (stepsPerc * (i + 1)));
+        ? Math.round((valClampRGB[0] / 100) * (colorStepPercent * (i + 1)))
+        : Math.round(minColorRGB[0] + (valClampRGB[0] / 100) * (colorStepPercent * (i + 1)));
 
     const clampedG =
       valClampRGB[1] > 0
-        ? Math.round((valClampRGB[1] / 100) * (stepsPerc * (i + 1)))
-        : Math.round(minColorRGB[1] + (valClampRGB[1] / 100) * (stepsPerc * (i + 1)));
+        ? Math.round((valClampRGB[1] / 100) * (colorStepPercent * (i + 1)))
+        : Math.round(minColorRGB[1] + (valClampRGB[1] / 100) * (colorStepPercent * (i + 1)));
 
     const clampedB =
       valClampRGB[2] > 0
-        ? Math.round((valClampRGB[2] / 100) * (stepsPerc * (i + 1)))
-        : Math.round(minColorRGB[2] + (valClampRGB[2] / 100) * (stepsPerc * (i + 1)));
+        ? Math.round((valClampRGB[2] / 100) * (colorStepPercent * (i + 1)))
+        : Math.round(minColorRGB[2] + (valClampRGB[2] / 100) * (colorStepPercent * (i + 1)));
     if (returnType) colors.push(formatFunc([clampedR, clampedG, clampedB]));
   }
   if (inclusiveEnds) colors.push(formatFunc(maxColorRGB));
@@ -126,10 +126,10 @@ function getLinearDataGradient(
     case 'HEX':
       formatFunc = _getHex;
       break;
-    case 'RBG_STRING':
+    case 'RGB_STRING':
       formatFunc = _getRGBString;
       break;
-    case 'RBG_ARRAY':
+    case 'RGB_ARRAY':
       formatFunc = _getRGBArray;
       break;
     default:
@@ -147,25 +147,26 @@ function getLinearDataGradient(
   const diff = maxVal - minVal;
   const colors: DataGradientStep[] = [];
 
+  const stepSizePercent: number = 100 / steps;
   // const colors = []
   let minI: number;
   let maxI: number;
-  let stepsPerc: number;
+  let colorStepPercent: number;
   if (inclusiveEnds) {
     minI = 0;
     maxI = steps - 2;
-    stepsPerc = 100 / (steps - 1);
+    colorStepPercent = 100 / (steps - 1);
   } else {
     minI = 0;
     maxI = steps;
-    stepsPerc = 100 / (steps + 1);
+    colorStepPercent = 100 / (steps + 1);
   }
 
   if (inclusiveEnds) {
     colors.push({
       color: formatFunc(minColorRGB),
       minVal,
-      maxVal: minVal + (diff * stepsPerc) / 100,
+      maxVal: minVal + (diff * stepSizePercent) / 100,
     });
   }
   for (let i = minI; i < maxI; i++) {
@@ -176,30 +177,30 @@ function getLinearDataGradient(
     ];
     const clampedR =
       valClampRGB[0] > 0
-        ? Math.round((valClampRGB[0] / 100) * (stepsPerc * (i + 1)))
-        : Math.round(minColorRGB[0] + (valClampRGB[0] / 100) * (stepsPerc * (i + 1)));
+        ? Math.round((valClampRGB[0] / 100) * (colorStepPercent * (i + 1)))
+        : Math.round(minColorRGB[0] + (valClampRGB[0] / 100) * (colorStepPercent * (i + 1)));
 
     const clampedG =
       valClampRGB[1] > 0
-        ? Math.round((valClampRGB[1] / 100) * (stepsPerc * (i + 1)))
-        : Math.round(minColorRGB[1] + (valClampRGB[1] / 100) * (stepsPerc * (i + 1)));
+        ? Math.round((valClampRGB[1] / 100) * (colorStepPercent * (i + 1)))
+        : Math.round(minColorRGB[1] + (valClampRGB[1] / 100) * (colorStepPercent * (i + 1)));
 
     const clampedB =
       valClampRGB[2] > 0
-        ? Math.round((valClampRGB[2] / 100) * (stepsPerc * (i + 1)))
-        : Math.round(minColorRGB[2] + (valClampRGB[2] / 100) * (stepsPerc * (i + 1)));
+        ? Math.round((valClampRGB[2] / 100) * (colorStepPercent * (i + 1)))
+        : Math.round(minColorRGB[2] + (valClampRGB[2] / 100) * (colorStepPercent * (i + 1)));
 
     colors.push({
       color: formatFunc([clampedR, clampedG, clampedB]),
-      minVal: minVal + ((i * stepsPerc) / 100) * diff,
-      maxVal: minVal + (((i + 1) * stepsPerc) / 100) * diff,
+      minVal: minVal + ((i * stepSizePercent) / 100) * diff,
+      maxVal: minVal + (((i + 1) * stepSizePercent) / 100) * diff,
     });
   }
   // last color is max color
   if (inclusiveEnds)
     colors.push({
       color: formatFunc(maxColorRGB),
-      minVal: maxVal - (diff * stepsPerc) / 100,
+      minVal: maxVal - (diff * stepSizePercent) / 100,
       maxVal,
     });
   return colors;
