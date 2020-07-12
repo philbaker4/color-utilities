@@ -1,23 +1,4 @@
-import { getMultiColorDataGradient, changeSaturation } from './utilities';
+import { getColorFromLinearDataGradient } from './utilities';
 
-// const multiColorGradientDefinition = [
-//   {
-//     minVal: 0,
-//     minColor: 'red',
-//     maxVal: 1,
-//     maxColor: 'blue',
-//   },
-//   {
-//     minVal: 1,
-//     minColor: 'blue',
-//     maxVal: 3,
-//     maxColor: 'yellow',
-//   },
-// ];
-
-// console.log(getMultiColorDataGradient(multiColorGradientDefinition, 12, 'HEX'));
-
-console.log(changeSaturation('red', 0.25, 'RGB_STRING'));
-console.log(changeSaturation('red', 0.25, 'HEX'));
-console.log(changeSaturation('red', -0.25, 'RGB_STRING'));
-console.log(changeSaturation('red', -0.25, 'HEX'));
+console.log(getColorFromLinearDataGradient('red', 0, 'blue', 1, 4, 0.2, true, 'RGB_STRING'));
+console.log(getColorFromLinearDataGradient('red', 0, 'blue', 1, 4, 0.2, false, 'RGB_STRING'));

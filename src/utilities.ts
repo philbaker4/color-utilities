@@ -1,6 +1,14 @@
-import { processValue, pad } from './helpers';
+import {
+  processValue,
+  pad,
+  getInterpolatedColor,
+  _getHex,
+  _getRGBArray,
+  _getRGBString,
+  getFormatFunc,
+  getMinMaxColorArrays,
+} from './helpers';
 import { DataGradientStep, GradientDefinition } from './types';
-import { format } from 'prettier';
 function getRGBString(color: any) {
   const rgbArray = processValue(color);
   if (!rgbArray) {
@@ -24,19 +32,6 @@ function getHex(color: any) {
   return _getHex(rgbArray);
 }
 
-function _getRGBString(color: number[]): string {
-  return `rgb(${color.join(', ')})`;
-}
-function _getRGBArray(color: number[]): number[] {
-  return color;
-}
-function _getHex(color: number[]): string {
-  const R = pad(color[0].toString(16), 2);
-  const G = pad(color[1].toString(16), 2);
-  const B = pad(color[2].toString(16), 2);
-  return ['#', R, G, B].join('');
-}
-
 // Array of colors representing gradient
 function getLinearGradient(
   minColor: string | number[],
@@ -45,30 +40,9 @@ function getLinearGradient(
   inclusiveEnds: boolean = true,
   returnType: string = 'HEX',
 ) {
-  let formatFunc;
-  switch (returnType) {
-    case 'HEX':
-      formatFunc = _getHex;
-      break;
-    case 'RGB_STRING':
-      formatFunc = _getRGBString;
-      break;
-    case 'RGB_ARRAY':
-      formatFunc = _getRGBArray;
-      break;
-    default:
-      throw new Error('getColorSteps: returnType must be one of HEX, RGB_STRING, RGB_ARRAY');
-  }
+  const formatFunc = getFormatFunc(returnType);
 
-  const minColorRGB: number[] | undefined = processValue(minColor);
-  const maxColorRGB: number[] | undefined = processValue(maxColor);
-
-  if (!minColorRGB) {
-    throw new Error('getColorSteps: minColor not formatted correctly or not a valid css color name.');
-  }
-  if (!maxColorRGB) {
-    throw new Error('getColorSteps: maxColor not formatted correctly or not a valid css color name.');
-  }
+  const { minColorRGB, maxColorRGB } = getMinMaxColorArrays(minColor, maxColor);
   const colors: any[] = [];
 
   if (inclusiveEnds) {
@@ -87,26 +61,9 @@ function getLinearGradient(
     colorStepPercent = 100 / (steps + 1);
   }
   for (let i = minI; i < maxI; i++) {
-    const valClampRGB = [
-      maxColorRGB[0] - minColorRGB[0],
-      maxColorRGB[1] - minColorRGB[1],
-      maxColorRGB[2] - minColorRGB[2],
-    ];
-    const clampedR =
-      valClampRGB[0] > 0
-        ? Math.round((valClampRGB[0] / 100) * (colorStepPercent * (i + 1)))
-        : Math.round(minColorRGB[0] + (valClampRGB[0] / 100) * (colorStepPercent * (i + 1)));
+    const color = getInterpolatedColor(minColorRGB, maxColorRGB, colorStepPercent * (i + 1));
 
-    const clampedG =
-      valClampRGB[1] > 0
-        ? Math.round((valClampRGB[1] / 100) * (colorStepPercent * (i + 1)))
-        : Math.round(minColorRGB[1] + (valClampRGB[1] / 100) * (colorStepPercent * (i + 1)));
-
-    const clampedB =
-      valClampRGB[2] > 0
-        ? Math.round((valClampRGB[2] / 100) * (colorStepPercent * (i + 1)))
-        : Math.round(minColorRGB[2] + (valClampRGB[2] / 100) * (colorStepPercent * (i + 1)));
-    if (returnType) colors.push(formatFunc([clampedR, clampedG, clampedB]));
+    if (formatFunc) colors.push(formatFunc(color));
   }
   if (inclusiveEnds) colors.push(formatFunc(maxColorRGB));
   return colors;
@@ -122,29 +79,9 @@ function getLinearDataGradient(
   inclusiveEnds: boolean = true,
   returnType: string = 'HEX',
 ): DataGradientStep[] | undefined {
-  let formatFunc;
-  switch (returnType) {
-    case 'HEX':
-      formatFunc = _getHex;
-      break;
-    case 'RGB_STRING':
-      formatFunc = _getRGBString;
-      break;
-    case 'RGB_ARRAY':
-      formatFunc = _getRGBArray;
-      break;
-    default:
-      throw new Error('getColorSteps: returnType must be one of HEX, RGB_STRING, RGB_ARRAY');
-  }
+  const formatFunc = getFormatFunc(returnType);
+  const { minColorRGB, maxColorRGB } = getMinMaxColorArrays(minColor, maxColor);
 
-  const minColorRGB = processValue(minColor);
-  const maxColorRGB = processValue(maxColor);
-  if (!minColorRGB) {
-    throw new Error('getColorSteps: minColor not formatted correctly or not a valid css color name.');
-  }
-  if (!maxColorRGB) {
-    throw new Error('getColorSteps: maxColor not formatted correctly or not a valid css color name.');
-  }
   const diff = maxVal - minVal;
   const colors: DataGradientStep[] = [];
 
@@ -171,28 +108,10 @@ function getLinearDataGradient(
     });
   }
   for (let i = minI; i < maxI; i++) {
-    const valClampRGB = [
-      maxColorRGB[0] - minColorRGB[0],
-      maxColorRGB[1] - minColorRGB[1],
-      maxColorRGB[2] - minColorRGB[2],
-    ];
-    const clampedR =
-      valClampRGB[0] > 0
-        ? Math.round((valClampRGB[0] / 100) * (colorStepPercent * (i + 1)))
-        : Math.round(minColorRGB[0] + (valClampRGB[0] / 100) * (colorStepPercent * (i + 1)));
-
-    const clampedG =
-      valClampRGB[1] > 0
-        ? Math.round((valClampRGB[1] / 100) * (colorStepPercent * (i + 1)))
-        : Math.round(minColorRGB[1] + (valClampRGB[1] / 100) * (colorStepPercent * (i + 1)));
-
-    const clampedB =
-      valClampRGB[2] > 0
-        ? Math.round((valClampRGB[2] / 100) * (colorStepPercent * (i + 1)))
-        : Math.round(minColorRGB[2] + (valClampRGB[2] / 100) * (colorStepPercent * (i + 1)));
+    const color = getInterpolatedColor(minColorRGB, maxColorRGB, colorStepPercent * (i + 1));
 
     colors.push({
-      color: formatFunc([clampedR, clampedG, clampedB]),
+      color: formatFunc(color),
       minVal: minVal + ((i * stepSizePercent) / 100) * diff,
       maxVal: minVal + (((i + 1) * stepSizePercent) / 100) * diff,
     });
@@ -226,20 +145,7 @@ function getMultiColorDataGradient(gradientDefinition: GradientDefinition[], ste
 function changeSaturation(color: string | number[], percent: number, returnType: string = 'HEX') {
   if (percent < -1 || percent > 1)
     console.warn('changeSaturation: percent should be a decimal representation in [-1,1]');
-  let formatFunc;
-  switch (returnType) {
-    case 'HEX':
-      formatFunc = _getHex;
-      break;
-    case 'RGB_STRING':
-      formatFunc = _getRGBString;
-      break;
-    case 'RGB_ARRAY':
-      formatFunc = _getRGBArray;
-      break;
-    default:
-      throw new Error('changeSaturdation: returnType must be one of HEX, RGB_STRING, RGB_ARRAY');
-  }
+  const formatFunc = getFormatFunc(returnType);
   const processedColor = processValue(color);
   if (!processedColor)
     throw new Error('changeSaturation: Color string not formatted correctly or not a valid css color name.');
@@ -252,6 +158,47 @@ function changeSaturation(color: string | number[], percent: number, returnType:
   return formatFunc([R, G, B]);
 }
 
+function getColorFromLinearDataGradient(
+  minColor: string | number[],
+  minVal: number,
+  maxColor: string | number[],
+  maxVal: number,
+  steps: number,
+  value: number,
+  inclusiveEnds: boolean = true,
+  returnType: string = 'HEX',
+  byStep: boolean = true,
+) {
+  const formatFunc = getFormatFunc(returnType);
+  const minColorRGB = processValue(minColor);
+  const maxColorRGB = processValue(maxColor);
+  if (!minColorRGB) {
+    throw new Error('getColorSteps: minColor not formatted correctly or not a valid css color name.');
+  }
+  if (!maxColorRGB) {
+    throw new Error('getColorSteps: maxColor not formatted correctly or not a valid css color name.');
+  }
+  const diff = maxVal - minVal;
+
+  const stepSize = diff / steps;
+
+  let colorStepPercent: number;
+  if (inclusiveEnds) {
+    colorStepPercent = 100 / (steps - 1);
+  } else {
+    colorStepPercent = 100 / (steps + 1);
+  }
+
+  // for now, assuming value is between min, max
+  const valStep = Math.floor((value - minVal) / stepSize);
+  if (inclusiveEnds) {
+    if (valStep === 0) return formatFunc(minColorRGB);
+    else if (valStep === steps - 1) return formatFunc(maxColorRGB);
+  }
+  const color = getInterpolatedColor(minColorRGB, maxColorRGB, colorStepPercent * (valStep + 1));
+  return formatFunc(color);
+}
+
 export {
   getRGBArray,
   getRGBString,
@@ -260,4 +207,5 @@ export {
   getLinearDataGradient,
   getMultiColorDataGradient,
   changeSaturation,
+  getColorFromLinearDataGradient,
 };
