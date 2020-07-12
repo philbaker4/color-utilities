@@ -29,6 +29,19 @@ function getHex(color: any) {
     return ['#', R, G, B].join('');
 }
 
+function _getRGBString(color: Array<number>) {
+    return `rgb(${color.join(', ')})`
+}
+function _getRGBArray(color: Array<number>) {
+    return color;
+}
+function _getHex(color: Array<number>) {
+    const R = pad(color[0].toString(16), 2);
+    const G = pad(color[1].toString(16), 2);
+    const B = pad(color[2].toString(16), 2);
+    return ['#', R, G, B].join('');
+}
+
 // Array of colors representing gradient
 function getLinearGradient(minColor: string, maxColor: string, steps: number, inclusiveEnds: boolean=true, returnType: string='HEX') {
     let formatFunc;
@@ -96,17 +109,17 @@ function getLinearGradient(minColor: string, maxColor: string, steps: number, in
 
 
 // Array of objects representing steps in a data gradient 
-function getLinearDataGradient(minColor: string, minVal: number, maxColor: string, maxVal: number, steps: number, inclusiveEnds: boolean=true, returnType: string='HEX') {
+function getLinearDataGradient(minColor: string, minVal: number, maxColor: string, maxVal: number, steps: number, inclusiveEnds: boolean=true, returnType: string='HEX'): DataGradientStep[] | undefined {
     let formatFunc;
     switch(returnType) {
         case 'HEX':
-            formatFunc = getHex
+            formatFunc = _getHex
             break
         case 'RBG_STRING':
-            formatFunc = getRGBString
+            formatFunc = _getRGBString
             break
         case 'RBG_ARRAY':
-            formatFunc = getRGBArray
+            formatFunc = _getRGBArray
             break
         default:
             console.error('getColorSteps: returnType must be one of HEX, RGB_STRING, RGB_ARRAY')
@@ -125,13 +138,15 @@ function getLinearDataGradient(minColor: string, minVal: number, maxColor: strin
     }
     const stepsPerc = 100 / (steps);
     const diff = maxVal - minVal
-    const colors: Array<any> = []
+    const colors: DataGradientStep[] = []
 
-    if (inclusiveEnds) colors.push({
-        color: formatFunc(minColorRGB),
-        minVal,
-        maxVal: minVal + diff * stepsPerc/100 
-    })
+    if (inclusiveEnds) {
+        colors.push({
+            color: formatFunc(minColorRGB),
+            minVal,
+            maxVal: minVal + diff * stepsPerc/100 
+        })
+    }
     // const colors = []
     let minI: number, maxI: number;
     if (inclusiveEnds) { 
@@ -178,4 +193,22 @@ function getLinearDataGradient(minColor: string, minVal: number, maxColor: strin
 }
 
 
-export { getRGBArray, getRGBString, getHex, getLinearGradient, getLinearDataGradient}
+
+// Array of objects representing steps in a multicolor data gradient
+function getMultiColorDataGradient(gradientDefinition: GradientDefinition[], steps:number = 100) {
+    let minVal = gradientDefinition[0].minVal
+    let maxVal = gradientDefinition[gradientDefinition.length-1].maxVal
+    let overallDiff = maxVal - minVal
+    let gradient: DataGradientStep[] = []
+    for (let gr of gradientDefinition) {
+        const diff = gr.maxVal - gr.minVal
+        const numSteps = Math.round(steps * diff / overallDiff)
+        const grad = getLinearDataGradient(gr.minColor, gr.minVal, gr.maxColor, gr.maxVal, numSteps, false)
+        if (grad) gradient = gradient.concat(grad)
+    }
+    return gradient
+}
+
+
+
+export { getRGBArray, getRGBString, getHex, getLinearGradient, getLinearDataGradient, getMultiColorDataGradient}
