@@ -15,7 +15,7 @@ function getType(val: string): number {
 }
 
 // process the value irrespective of representation type
-function processValue(val: string): any {
+export function processValue(val: string): Array<number> | undefined {
     const type = getType(val)
 	switch (type) {
 		case HEX: {
@@ -103,32 +103,15 @@ function processCSSColorName(val: string)
     };
 
     if (colors[val.toLowerCase()] !== undefined)
-        return colors[val.toLowerCase()];
+        return processHEX(colors[val.toLowerCase()]);
 
     return;
 }
 
-function pad(n: string, width: number, z?: string) {
+export function pad(n: string, width: number, z?: string) {
 	z = z || '0';
 	n = n + '';
 	return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
 }
 
 
-function getRGBString(color: string) {
-    const rgbArray = processValue(color)
-    return `rgb(${rgbArray.join(', ')})`
-}
-function getRGBArray(color: string) {
-    return processValue(color)
-}
-
-function getHex(color: string) {
-    const rgbArray = processValue(color)
-    const R = pad(rgbArray[0].toString(16), 2);
-    const G = pad(rgbArray[1].toString(16), 2);
-    const B = pad(rgbArray[2].toString(16), 2);
-    return ['#', R, G, B].join('');
-}
-
-export { getRGBArray, getRGBString, getHex}
