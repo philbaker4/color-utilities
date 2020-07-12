@@ -63,19 +63,22 @@ function getLinearGradient(minColor: string | number[], maxColor: string | numbe
         throw new Error('getColorSteps: maxColor not formatted correctly or not a valid css color name.')
     }
     const colors: any[]  = []
+    
     if (inclusiveEnds) {
         colors.push(formatFunc(minColorRGB))
     }
-    const stepsPerc = 100 / (steps)
     let minI: number;
     let maxI: number;
+    let stepsPerc: number;
     if (inclusiveEnds) { 
-        minI = 1;
-        maxI = steps - 1;
+        minI = 0;
+        maxI = steps - 2;
+        stepsPerc = 100 / (steps-1)
     }
     else {
         minI = 0;
         maxI = steps;
+        stepsPerc = 100 / (steps+1)
     }
     for (let i = minI; i < maxI; i++) {
         const valClampRGB = [maxColorRGB[0] - minColorRGB[0], maxColorRGB[1] - minColorRGB[1], maxColorRGB[2] - minColorRGB[2]];
@@ -93,7 +96,6 @@ function getLinearGradient(minColor: string | number[], maxColor: string | numbe
             valClampRGB[2] > 0
                 ? Math.round((valClampRGB[2] / 100) * (stepsPerc * (i + 1)))
                 : Math.round(minColorRGB[2] + (valClampRGB[2] / 100) * (stepsPerc * (i + 1)))
-            
         if (returnType)
         colors.push(formatFunc([clampedR, clampedG, clampedB]))
     }
@@ -127,9 +129,24 @@ function getLinearDataGradient(minColor: string | number[], minVal: number, maxC
     if (!maxColorRGB) {
         throw new Error('getColorSteps: maxColor not formatted correctly or not a valid css color name.')
     }
-    const stepsPerc = 100 / (steps);
     const diff = maxVal - minVal
     const colors: DataGradientStep[] = []
+
+    
+    // const colors = []
+    let minI: number;
+    let maxI: number;
+    let stepsPerc: number;
+    if (inclusiveEnds) { 
+        minI = 0;
+        maxI = steps - 2;
+        stepsPerc = 100 / (steps-1)
+    }
+    else {
+        minI = 0;
+        maxI = steps;
+        stepsPerc = 100 / (steps+1)
+    }
 
     if (inclusiveEnds) {
         colors.push({
@@ -137,17 +154,6 @@ function getLinearDataGradient(minColor: string | number[], minVal: number, maxC
             minVal,
             maxVal: minVal + diff * stepsPerc/100 
         })
-    }
-    // const colors = []
-    let minI: number;
-    let maxI: number;
-    if (inclusiveEnds) { 
-        minI = 1;
-        maxI = steps - 1;
-    }
-    else {
-        minI = 0;
-        maxI = steps;
     }
     for (let i = minI; i < maxI; i++) {
         const valClampRGB = [maxColorRGB[0] - minColorRGB[0], maxColorRGB[1] - minColorRGB[1], maxColorRGB[2] - minColorRGB[2]];
