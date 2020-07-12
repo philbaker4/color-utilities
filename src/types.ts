@@ -7,7 +7,7 @@ interface DataGradientStep {
 
 interface GradientDefinition {
     minVal: number;
-    minColor: string;
+    minColor: string | number[];
     maxVal: number;
-    maxColor: string;
+    maxColor: string | number[];
 }
