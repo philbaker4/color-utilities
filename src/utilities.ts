@@ -201,6 +201,24 @@ function getColorFromLinearDataGradient(
   }
 }
 
+function getColorFromMultiColorLinearGradient(gradientDefinition: GradientDefinition[], steps: number, value: number, returnType?: string, byStep: boolean = true) {
+    if (gradientDefinition.length === 0) throw new Error('getColorFromMultiColorLinearGradient: gradient has no values')
+    if (value < gradientDefinition[0].minVal) throw new Error('getColorFromMultiColorLinearGradient: value is below the gradient')
+    if (value > gradientDefinition[gradientDefinition.length-1].maxVal) throw new Error('getColorFromMultiColorLinearGradient: value is above the gradient')
+
+    const minVal = gradientDefinition[0].minVal;
+    const maxVal = gradientDefinition[gradientDefinition.length - 1].maxVal;
+    const overallDiff = maxVal - minVal;
+
+    for (let step of gradientDefinition) {
+        if (value > step.minVal && value <= step.maxVal) {
+            const diff = step.maxVal - step.minVal;
+            const numSteps = Math.round((steps * diff) / overallDiff);
+            return getColorFromLinearDataGradient(step.minColor, step.minVal, step.maxColor, step.maxVal, numSteps, value, false, returnType, byStep)
+        }
+    }
+}
+
 export {
   getRGBArray,
   getRGBString,
@@ -210,4 +228,5 @@ export {
   getMultiColorDataGradient,
   changeSaturation,
   getColorFromLinearDataGradient,
+  getColorFromMultiColorLinearGradient,
 };

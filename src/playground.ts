@@ -1,7 +1,22 @@
-import { getColorFromLinearDataGradient } from './utilities';
+import { getMultiColorDataGradient, changeSaturation, getColorFromMultiColorLinearGradient } from './utilities';
 
-console.log(getColorFromLinearDataGradient('red', 0, 'blue', 1, 4, 0.2, true, 'RGB_STRING'));
-console.log(getColorFromLinearDataGradient('red', 0, 'blue', 1, 4, 0.2, false, 'RGB_STRING'));
+const multiColorGradientDefinition = [
+  {
+    minVal: 0,
+    minColor: 'red',
+    maxVal: 1,
+    maxColor: 'blue',
+  },
+  {
+    minVal: 1,
+    minColor: 'blue',
+    maxVal: 3,
+    maxColor: 'yellow',
+  },
+];
 
-console.log(getColorFromLinearDataGradient('red', 0, 'blue', 1, 4, 0.5, true, 'RGB_STRING', false));
-console.log(getColorFromLinearDataGradient('red', 0, 'blue', 1, 4, 0.5, false, 'RGB_STRING', false));
+console.log(getMultiColorDataGradient(multiColorGradientDefinition, 12, 'HEX'));
+
+console.log(getColorFromMultiColorLinearGradient(multiColorGradientDefinition, 12, .5, 'RGB_ARRAY', false))
+
+
