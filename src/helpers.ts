@@ -236,19 +236,13 @@ export function getInterpolatedColor(minColorRGB: number[], maxColorRGB: number[
     maxColorRGB[2] - minColorRGB[2],
   ];
   const clampedR =
-    valClampRGB[0] > 0
-      ? Math.round((valClampRGB[0] / 100) * percent)
-      : Math.round(minColorRGB[0] + (valClampRGB[0] / 100) * percent);
+    valClampRGB[0] > 0 ? Math.round(valClampRGB[0] * percent) : Math.round(minColorRGB[0] + valClampRGB[0] * percent);
 
   const clampedG =
-    valClampRGB[1] > 0
-      ? Math.round((valClampRGB[1] / 100) * percent)
-      : Math.round(minColorRGB[1] + (valClampRGB[1] / 100) * percent);
+    valClampRGB[1] > 0 ? Math.round(valClampRGB[1] * percent) : Math.round(minColorRGB[1] + valClampRGB[1] * percent);
 
   const clampedB =
-    valClampRGB[2] > 0
-      ? Math.round((valClampRGB[2] / 100) * percent)
-      : Math.round(minColorRGB[2] + (valClampRGB[2] / 100) * percent);
+    valClampRGB[2] > 0 ? Math.round(valClampRGB[2] * percent) : Math.round(minColorRGB[2] + valClampRGB[2] * percent);
   return [clampedR, clampedG, clampedB];
 }
 

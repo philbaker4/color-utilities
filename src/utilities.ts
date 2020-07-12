@@ -61,7 +61,7 @@ function getLinearGradient(
     colorStepPercent = 100 / (steps + 1);
   }
   for (let i = minI; i < maxI; i++) {
-    const color = getInterpolatedColor(minColorRGB, maxColorRGB, colorStepPercent * (i + 1));
+    const color = getInterpolatedColor(minColorRGB, maxColorRGB, (colorStepPercent * (i + 1)) / 100);
 
     if (formatFunc) colors.push(formatFunc(color));
   }
@@ -108,7 +108,7 @@ function getLinearDataGradient(
     });
   }
   for (let i = minI; i < maxI; i++) {
-    const color = getInterpolatedColor(minColorRGB, maxColorRGB, colorStepPercent * (i + 1));
+    const color = getInterpolatedColor(minColorRGB, maxColorRGB, (colorStepPercent * (i + 1)) / 100);
 
     colors.push({
       color: formatFunc(color),
@@ -170,33 +170,35 @@ function getColorFromLinearDataGradient(
   byStep: boolean = true,
 ) {
   const formatFunc = getFormatFunc(returnType);
-  const minColorRGB = processValue(minColor);
-  const maxColorRGB = processValue(maxColor);
-  if (!minColorRGB) {
-    throw new Error('getColorSteps: minColor not formatted correctly or not a valid css color name.');
-  }
-  if (!maxColorRGB) {
-    throw new Error('getColorSteps: maxColor not formatted correctly or not a valid css color name.');
-  }
+  const { minColorRGB, maxColorRGB } = getMinMaxColorArrays(minColor, maxColor);
+
+  if (value < minVal) throw new Error('getColorFromLinearGradient: value is less than minVal');
+  if (value > maxVal) throw new Error('getColorFromLinearGradient: value is greater than maxVal');
+
   const diff = maxVal - minVal;
 
-  const stepSize = diff / steps;
+  if (byStep) {
+    const stepSize = diff / steps;
 
-  let colorStepPercent: number;
-  if (inclusiveEnds) {
-    colorStepPercent = 100 / (steps - 1);
+    let colorStepPercent: number;
+    if (inclusiveEnds) {
+      colorStepPercent = 100 / (steps - 1);
+    } else {
+      colorStepPercent = 100 / (steps + 1);
+    }
+
+    // for now, assuming value is between min, max
+    const valStep = Math.floor((value - minVal) / stepSize);
+    if (inclusiveEnds) {
+      if (valStep === 0) return formatFunc(minColorRGB);
+      else if (valStep === steps - 1) return formatFunc(maxColorRGB);
+    }
+    const color = getInterpolatedColor(minColorRGB, maxColorRGB, (colorStepPercent * (valStep + 1)) / 100);
+    return formatFunc(color);
   } else {
-    colorStepPercent = 100 / (steps + 1);
+    const color = getInterpolatedColor(minColorRGB, maxColorRGB, (value - minVal) / diff);
+    return formatFunc(color);
   }
-
-  // for now, assuming value is between min, max
-  const valStep = Math.floor((value - minVal) / stepSize);
-  if (inclusiveEnds) {
-    if (valStep === 0) return formatFunc(minColorRGB);
-    else if (valStep === steps - 1) return formatFunc(maxColorRGB);
-  }
-  const color = getInterpolatedColor(minColorRGB, maxColorRGB, colorStepPercent * (valStep + 1));
-  return formatFunc(color);
 }
 
 export {
