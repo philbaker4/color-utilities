@@ -1,5 +1,5 @@
 import { processValue, pad } from './helpers';
-
+import { DataGradientStep, GradientDefinition } from './types';
 function getRGBString(color: any) {
   const rgbArray = processValue(color);
   if (!rgbArray) {
@@ -207,7 +207,7 @@ function getLinearDataGradient(
 }
 
 // Array of objects representing steps in a multicolor data gradient
-function getMultiColorDataGradient(gradientDefinition: GradientDefinition[], steps: number = 100) {
+function getMultiColorDataGradient(gradientDefinition: GradientDefinition[], steps: number = 100, returnType: string) {
   const minVal = gradientDefinition[0].minVal;
   const maxVal = gradientDefinition[gradientDefinition.length - 1].maxVal;
   const overallDiff = maxVal - minVal;
@@ -215,7 +215,7 @@ function getMultiColorDataGradient(gradientDefinition: GradientDefinition[], ste
   for (const gr of gradientDefinition) {
     const diff = gr.maxVal - gr.minVal;
     const numSteps = Math.round((steps * diff) / overallDiff);
-    const grad = getLinearDataGradient(gr.minColor, gr.minVal, gr.maxColor, gr.maxVal, numSteps, false);
+    const grad = getLinearDataGradient(gr.minColor, gr.minVal, gr.maxColor, gr.maxVal, numSteps, false, returnType);
     if (grad) gradient = gradient.concat(grad);
   }
   return gradient;
