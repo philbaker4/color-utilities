@@ -13,7 +13,9 @@
     "prepublishOnly" : "npm test && npm run lint",
     "preversion" : "npm run lint",
     "version" : "npm run format && git add -A src",
-    "postversion" : "git push && git push --tags"
+    "postversion" : "git push && git push --tags",
+
+    "playground": "ts-node src/playground.ts"
   },
   "keywords": ["color", "gradient", "gradient generator", "color gradient", "linear gradient"],
   "author": "philbaker4",
