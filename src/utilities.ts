@@ -5,14 +5,14 @@ function getRGBString(color: any) {
     if (!rgbArray) {
         throw new Error('getRGBString: Color string not formatted correctly or not a valid css color name.')
     }
-    return `rgb(${rgbArray.join(', ')})`
+    return _getRGBString(rgbArray)
 }
 function getRGBArray(color: any) {
     const rgbArray = processValue(color);
     if (!rgbArray) {
         throw new Error('getRGBArray: Color string not formatted correctly or not a valid css color name.')
     }
-    return rgbArray;
+    return _getRGBArray(rgbArray);
 }
 
 function getHex(color: any) {
@@ -20,10 +20,7 @@ function getHex(color: any) {
     if (!rgbArray) {
         throw new Error('getHex: Color string not formatted correctly or not a valid css color name.')
     }
-    const R = pad(rgbArray[0].toString(16), 2);
-    const G = pad(rgbArray[1].toString(16), 2);
-    const B = pad(rgbArray[2].toString(16), 2);
-    return ['#', R, G, B].join('');
+    return _getHex(rgbArray);
 }
 
 function _getRGBString(color: number[]): string {
