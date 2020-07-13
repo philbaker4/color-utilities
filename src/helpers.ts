@@ -276,10 +276,10 @@ export function getMinMaxColorArrays(minColor: string | number[], maxColor: stri
   const minColorRGB: number[] | undefined = processValue(minColor);
   const maxColorRGB: number[] | undefined = processValue(maxColor);
   if (!minColorRGB) {
-    throw new Error('getColorSteps: minColor not formatted correctly or not a valid css color name.');
+    throw new Error('getMinMaxColorArrays: minColor not formatted correctly or not a valid css color name.');
   }
   if (!maxColorRGB) {
-    throw new Error('getColorSteps: maxColor not formatted correctly or not a valid css color name.');
+    throw new Error('getMinMaxColorArrays: maxColor not formatted correctly or not a valid css color name.');
   }
   return { minColorRGB, maxColorRGB };
 }
