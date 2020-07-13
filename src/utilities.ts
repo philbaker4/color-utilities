@@ -9,14 +9,14 @@ import {
   getMinMaxColorArrays,
 } from './helpers';
 import { DataGradientStep, GradientDefinition } from './types';
-function getRGBString(color: any) {
+function getRGBString(color: string | number[]) {
   const rgbArray = processValue(color);
   if (!rgbArray) {
     throw new Error('getRGBString: Color string not formatted correctly or not a valid css color name.');
   }
   return _getRGBString(rgbArray);
 }
-function getRGBArray(color: any) {
+function getRGBArray(color: string | number[]) {
   const rgbArray = processValue(color);
   if (!rgbArray) {
     throw new Error('getRGBArray: Color string not formatted correctly or not a valid css color name.');
@@ -24,7 +24,7 @@ function getRGBArray(color: any) {
   return _getRGBArray(rgbArray);
 }
 
-function getHex(color: any) {
+function getHex(color: string | number[]) {
   const rgbArray = processValue(color);
   if (!rgbArray) {
     throw new Error('getHex: Color string not formatted correctly or not a valid css color name.');
@@ -127,12 +127,16 @@ function getDataGradient(
 }
 
 // Array of objects representing steps in a multicolor data gradient
-function getMultiColorDataGradient(gradientDefinition: GradientDefinition[], steps: number = 100, returnType: string) {
-  const minVal = gradientDefinition[0].minVal;
-  const maxVal = gradientDefinition[gradientDefinition.length - 1].maxVal;
+function getMultiColorDataGradient(
+  multiColorGradientDefinition: GradientDefinition[],
+  steps: number = 100,
+  returnType: string,
+) {
+  const minVal = multiColorGradientDefinition[0].minVal;
+  const maxVal = multiColorGradientDefinition[multiColorGradientDefinition.length - 1].maxVal;
   const overallDiff = maxVal - minVal;
   let gradient: DataGradientStep[] = [];
-  for (const gr of gradientDefinition) {
+  for (const gr of multiColorGradientDefinition) {
     const diff = gr.maxVal - gr.minVal;
     const numSteps = Math.round((steps * diff) / overallDiff);
     const grad = getDataGradient(gr.minColor, gr.minVal, gr.maxColor, gr.maxVal, numSteps, false, returnType);
@@ -204,23 +208,24 @@ function getColorFromDataGradient(
 
 // get a color from a multi color data gradient by value
 function getColorFromMultiColorDataGradient(
-  gradientDefinition: GradientDefinition[],
+  multiColorGradientDefinition: GradientDefinition[],
   steps: number,
   value: number,
   returnType?: string,
   byStep: boolean = true,
 ) {
-  if (gradientDefinition.length === 0) throw new Error('getColorFromMultiColorLinearGradient: gradient has no values');
-  if (value < gradientDefinition[0].minVal)
+  if (multiColorGradientDefinition.length === 0)
+    throw new Error('getColorFromMultiColorLinearGradient: gradient has no values');
+  if (value < multiColorGradientDefinition[0].minVal)
     throw new Error('getColorFromMultiColorLinearGradient: value is below the gradient');
-  if (value > gradientDefinition[gradientDefinition.length - 1].maxVal)
+  if (value > multiColorGradientDefinition[multiColorGradientDefinition.length - 1].maxVal)
     throw new Error('getColorFromMultiColorLinearGradient: value is above the gradient');
 
-  const minVal = gradientDefinition[0].minVal;
-  const maxVal = gradientDefinition[gradientDefinition.length - 1].maxVal;
+  const minVal = multiColorGradientDefinition[0].minVal;
+  const maxVal = multiColorGradientDefinition[multiColorGradientDefinition.length - 1].maxVal;
   const overallDiff = maxVal - minVal;
 
-  for (let step of gradientDefinition) {
+  for (let step of multiColorGradientDefinition) {
     if (value > step.minVal && value <= step.maxVal) {
       const diff = step.maxVal - step.minVal;
       const numSteps = Math.round((steps * diff) / overallDiff);
