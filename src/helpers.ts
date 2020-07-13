@@ -223,12 +223,14 @@ function processCSSColorName(val: string) {
   throw new Error('processCSSColorName: string is not a valid css color name');
 }
 
+// used ensure that hex representation subparts are the appropriate length
 export function pad(n: string, width: number, z?: string) {
   z = z || '0';
   n = n + '';
   return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
 }
 
+// get the color a certain percent of the way between two points
 export function getInterpolatedColor(minColorRGB: number[], maxColorRGB: number[], percent: number) {
   const valClampRGB = [
     maxColorRGB[0] - minColorRGB[0],
@@ -246,6 +248,7 @@ export function getInterpolatedColor(minColorRGB: number[], maxColorRGB: number[
   return [clampedR, clampedG, clampedB];
 }
 
+// get the function that is associated with the passed returnType - RGB_ARRAY, RGB_STRING, HEX
 export function getFormatFunc(returnType: string) {
   switch (returnType) {
     case 'HEX':
@@ -259,12 +262,17 @@ export function getFormatFunc(returnType: string) {
   }
 }
 
+// join rgb color array into a string
 export function _getRGBString(color: number[]): string {
   return `rgb(${color.join(', ')})`;
 }
+
+// return rgb color array
 export function _getRGBArray(color: number[]): number[] {
   return color;
 }
+
+// convert rgb color array to hex string
 export function _getHex(color: number[]): string {
   const R = pad(color[0].toString(16), 2);
   const G = pad(color[1].toString(16), 2);
@@ -272,6 +280,7 @@ export function _getHex(color: number[]): string {
   return ['#', R, G, B].join('');
 }
 
+// convert min, max colors into rgb arrays for usage within gradient utilities
 export function getMinMaxColorArrays(minColor: string | number[], maxColor: string | number[]) {
   const minColorRGB: number[] | undefined = processValue(minColor);
   const maxColorRGB: number[] | undefined = processValue(maxColor);

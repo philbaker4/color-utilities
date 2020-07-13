@@ -158,6 +158,7 @@ function changeSaturation(color: string | number[], percent: number, returnType:
   return formatFunc([R, G, B]);
 }
 
+// get a color from a data gradient by value
 function getColorFromDataGradient(
   minColor: string | number[],
   minVal: number,
@@ -201,6 +202,7 @@ function getColorFromDataGradient(
   }
 }
 
+// get a color from a multi color data gradient by value
 function getColorFromMultiColorDataGradient(
   gradientDefinition: GradientDefinition[],
   steps: number,
