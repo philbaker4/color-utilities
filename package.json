@@ -1,7 +1,7 @@
 {
   "name": "color-utilities",
   "version": "1.0.0",
-  "description": "Small library for linear gradient creation and color manipulation.",
+  "description": "Lightweight library for color manipulation and linear gradient creation",
   "types": "lib/index.d.ts",
   "main": "index.js",
   "scripts": {
@@ -21,7 +21,8 @@
     "gradient",
     "gradient generator",
     "color gradient",
-    "linear gradient"
+    "linear gradient",
+    "multicolor gradient"
   ],
   "author": "philbaker4",
   "license": "ISC",
@@ -37,5 +38,9 @@
   },
   "files": [
     "lib/**/*"
-  ]
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git-https://github.com/philbaker4/color-utilities.git"
+  }
 }
