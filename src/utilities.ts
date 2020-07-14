@@ -225,7 +225,7 @@ function getColorFromMultiColorDataGradient(
   const maxVal = multiColorGradientDefinition[multiColorGradientDefinition.length - 1].maxVal;
   const overallDiff = maxVal - minVal;
 
-  for (let step of multiColorGradientDefinition) {
+  for (const step of multiColorGradientDefinition) {
     if (value > step.minVal && value <= step.maxVal) {
       const diff = step.maxVal - step.minVal;
       const numSteps = Math.round((steps * diff) / overallDiff);
