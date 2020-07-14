@@ -1,9 +1,9 @@
 {
-  "name": "color-visual-utilities",
+  "name": "visual-color-utilities",
   "version": "1.0.0",
   "description": "Lightweight library for color manipulation and linear gradient creation",
   "types": "lib/index.d.ts",
-  "main": "index.js",
+  "main": "lib/index.js",
   "scripts": {
     "build": "tsc",
     "format": "prettier --write \"src/**/*.ts\"",
@@ -24,7 +24,9 @@
     "linear gradient",
     "multicolor gradient",
     "color utilities",
-    "data color gradient"
+    "data color gradient",
+    "data gradient",
+    "continuous multicolor"
   ],
   "author": "philbaker4",
   "license": "MIT",
@@ -43,6 +45,6 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git-https://github.com/philbaker4/color-utilities.git"
+    "url": "git-https://github.com/philbaker4/visual-color-utilities.git"
   }
 }
