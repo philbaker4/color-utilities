@@ -1,5 +1,5 @@
 {
-  "name": "color-utilities",
+  "name": "color-visual-utilities",
   "version": "1.0.0",
   "description": "Lightweight library for color manipulation and linear gradient creation",
   "types": "lib/index.d.ts",
@@ -22,7 +22,9 @@
     "gradient generator",
     "color gradient",
     "linear gradient",
-    "multicolor gradient"
+    "multicolor gradient",
+    "color utilities",
+    "data color gradient"
   ],
   "author": "philbaker4",
   "license": "MIT",
