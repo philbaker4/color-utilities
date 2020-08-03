@@ -1,18 +1,18 @@
-# [visual-color-utilities](https://visual-color-utilities-doc.vercel.app/)
+# color-utilities
 
-Visual Color Utilities is a lightweight library for color manipulation and linear gradient creation. The library was born out of frustration when trying to create and color vanilla Javascript data visualizations. I struggled to find lightweight, easy to use, and reliable resources to manipulate colors and generate customized multicolor linear gradients, so I started writing my own. Enjoy!
+This is a lightweight library for color manipulation and linear gradient creation. The library was born out of frustration when trying to create and color vanilla Javascript data visualizations. I struggled to find lightweight, easy to use, and reliable resources to manipulate colors and generate customized multicolor linear gradients, so I started writing my own. Enjoy!
 
 ## Getting Started
 
 
 ### Installation
 ```bash
-$ npm install visual-color-utilities
+$ npm install color-utilities
 ```
 
 ### Usage
 ```js{18-31,34}
-import { getMultiColorLinearGradient } from 'visual-color-utilities'
+import { getMultiColorLinearGradient } from 'color-utilities'
 
 const multiColorGradientDefinition = [
   {
@@ -52,7 +52,7 @@ getColorFromMultiColorDataGradient(multiColorGradientDefinition, 12, 0.5, 'RGB_A
 
 ```
 
-### [Complete Documentation](https://visual-color-utilities-doc.vercel.app/)
+### [Complete Documentation](https://color-utilities-doc.vercel.app/)
 
 ## Development
 

@@ -1,5 +1,5 @@
 {
-  "name": "visual-color-utilities",
+  "name": "color-utilities",
   "version": "1.0.1",
   "description": "Lightweight library for color manipulation and linear gradient creation",
   "types": "lib/index.d.ts",
@@ -45,6 +45,6 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git-https://github.com/philbaker4/visual-color-utilities.git"
+    "url": "git-https://github.com/philbaker4/color-utilities.git"
   }
 }
