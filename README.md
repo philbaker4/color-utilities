@@ -7,12 +7,12 @@ This is a lightweight library for color manipulation and linear gradient creatio
 
 ### Installation
 ```bash
-$ npm install color-utilities
+$ npm install @philipbaker4/color-utilities
 ```
 
 ### Usage
 ```js{18-31,34}
-import { getMultiColorLinearGradient } from 'color-utilities'
+import { getMultiColorLinearGradient } from '@philipbaker4/color-utilities'
 
 const multiColorGradientDefinition = [
   {
