@@ -1,4 +1,4 @@
-# color-utilities
+# [color-utilities](https://www.npmjs.com/package/@philipbaker4/color-utilities)
 
 This is a lightweight library for color manipulation and linear gradient creation. The library was born out of frustration when trying to create and color vanilla Javascript data visualizations. I struggled to find lightweight, easy to use, and reliable resources to manipulate colors and generate customized multicolor linear gradients, so I started writing my own. Enjoy!
 

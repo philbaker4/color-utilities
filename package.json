@@ -46,5 +46,6 @@
   "repository": {
     "type": "git",
     "url": "git-https://github.com/philbaker4/color-utilities.git"
-  }
+  },
+  "homepage": "https://color-utilities-doc.vercel.app/"
 }
