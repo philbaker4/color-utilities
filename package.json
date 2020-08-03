@@ -1,6 +1,6 @@
 {
   "name": "@philipbaker4/color-utilities",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Lightweight library for color manipulation and linear gradient creation",
   "types": "lib/index.d.ts",
   "main": "lib/index.js",
